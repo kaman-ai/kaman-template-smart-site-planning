@@ -1,0 +1,8 @@
+{
+  "name": "Nava Nagar planning desk",
+  "agents": { "planner": "94a5e115-410f-546b-92f6-3e24d52d9271" },
+  "workflows": { "signoff": "ce7d1ae2-ec6b-547a-9bb3-580a481ab1fe" },
+  "lake": "{{lake_name}}",
+  "schema": "site",
+  "targetYear": "{{target_year}}"
+}
