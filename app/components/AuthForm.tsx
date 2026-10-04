@@ -5,10 +5,12 @@
 // the session in httpOnly cookies.
 import * as React from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { apiPath } from "../lib/apiPath";
 
 export function AuthForm({ mode }: { mode: "login" | "signup" }) {
-  const [error, setError] = React.useState<string | null>(null);
+  // A plain form post (before scripts load) comes back with ?error=.
+  const [error, setError] = React.useState<string | null>(useSearchParams().get("error"));
   const [busy, setBusy] = React.useState(false);
   const signup = mode === "signup";
 
@@ -43,7 +45,13 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           <p className="text-sm text-muted-foreground">Nava Nagar</p>
           <h1 className="text-xl font-semibold">{signup ? "Join the planning desk" : "Sign in to the planning desk"}</h1>
         </div>
-        <form onSubmit={(e) => void submit(e)} className="flex flex-col gap-4" data-testid={`${mode}-form`}>
+        <form
+          method="post"
+          action={apiPath(`/api/auth/${mode}`)}
+          onSubmit={(e) => void submit(e)}
+          className="flex flex-col gap-4"
+          data-testid={`${mode}-form`}
+        >
           {signup ? (
             <Field label="Your name" name="name" type="text" autoComplete="name" />
           ) : null}

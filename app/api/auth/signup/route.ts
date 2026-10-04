@@ -3,16 +3,16 @@
 // the password they chose (the key's owner must be allowed to add people
 // there), then signs them in.
 import { auth } from "../../../lib/kaman";
+import { answer, readFields } from "../../../lib/authRoute";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
-  const { email, password, name } = (await req.json().catch(() => ({}))) as {
-    email?: string;
-    password?: string;
-    name?: string;
-  };
-  if (!email || !password) return Response.json({ error: "Enter an email and a password." }, { status: 400 });
-  const r = await auth.signup(req, { email: email.trim(), password, ...(name?.trim() ? { displayName: name.trim() } : {}) });
-  return r.ok ? r.respond(Response.json({ ok: true })) : Response.json({ error: r.error }, { status: r.status });
+  const { fields, form } = await readFields(req);
+  const email = fields.email?.trim();
+  if (!email || !fields.password) {
+    return answer(req, form, "signup", { ok: false, status: 400, error: "Enter an email and a password." });
+  }
+  const name = fields.name?.trim();
+  return answer(req, form, "signup", await auth.signup(req, { email, password: fields.password, ...(name ? { displayName: name } : {}) }));
 }
