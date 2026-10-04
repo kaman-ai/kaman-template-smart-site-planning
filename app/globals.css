@@ -1,3 +1,4 @@
+@import "@kamanai/ui-theme";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
